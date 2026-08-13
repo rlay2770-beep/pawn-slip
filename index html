@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>အပေါင်ဆိုင် စီမံခန့်ခွဲမှုစနစ်</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Firebase App & Firestore SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap');
+        body { font-family: 'Padauk', sans-serif; }
+        
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 p-4 md:p-8">
+
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md border border-slate-200">
+        <!-- Header -->
+        <div class="text-center mb-6 border-b pb-4">
+            <h1 class="text-2xl font-bold text-slate-900">အပေါင်ဆိုင် စီမံခန့်ခွဲမှုစနစ်</h1>
+            <p class="text-sm text-slate-500">အပေါင်စာချုပ်နှင့် ပြေစာထုတ်ယူခြင်း</p>
+        </div>
+
+        <form id="pawnForm" class="space-y-6">
+            
+            <!-- အပေါင်ရှင် အချက်အလက် -->
+            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                <h2 class="text-md font-bold text-slate-700 mb-3 border-b pb-1">၁။ အပေါင်ရှင် အချက်အလက်</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">အပေါင်ရှင် အမည် *</label>
+                        <input type="text" id="customerName" required class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">မှတ်ပုံတင်နံပါတ် (NRC) *</label>
+                        <input type="text" id="customerNrc" required placeholder="၁၂/မဂဒ(နိုင်)၁၂၃၄၅၆" class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">ဖုန်းနံပါတ် *</label>
+                        <input type="tel" id="customerPhone" required class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">နေရပ်လိပ်စာ</label>
+                        <input type="text" id="customerAddress" class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- အပေါင်ပစ္စည်း အချက်အလက် -->
+            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                <h2 class="text-md font-bold text-slate-700 mb-3 border-b pb-1">၂။ အပေါင်ပစ္စည်း အချက်အလက်</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">ပစ္စည်းအမျိုးအစား *</label>
+                        <input type="text" id="itemType" placeholder="ဥပမာ - ဖုန်း / တက်ဘလက်" required class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Brand / Model *</label>
+                        <input type="text" id="itemModel" placeholder="ဥပမာ - Samsung A54" required class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">IMEI 1 / Serial No. *</label>
+                        <input type="text" id="itemImei1" required class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">IMEI 2 (ပါဝင်ပါက)</label>
+                        <input type="text" id="itemImei2" class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium mb-1">ပစ္စည်းအပြစ်အနာအဆာများ (အသေးစိတ် ရေးရန်) *</label>
+                        <textarea id="itemCondition" rows="2" placeholder="ဥပမာ - မှန်အက်ကြောင်း၊ ဘောင်ပွန်းရာ၊ ဘက်ထရီကျနေ" required class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- အပေါင်စာချုပ် ကိန်းဂဏန်းများ -->
+            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                <h2 class="text-md font-bold text-slate-700 mb-3 border-b pb-1">၃။ အပေါင်စာချုပ် အချက်အလက်</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">အပေါင်ထုတ်ပေးငွေ (ကျပ်) *</label>
+                        <input type="number" id="pawnAmount" required class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">အတိုးနှုန်း (%) *</label>
+                        <input type="number" id="interestRate" step="0.1" placeholder="ဥပမာ - 3" required class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">ပြန်ရွေးရမည့်ရက် *</label>
+                        <input type="date" id="dueDate" required class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" id="saveBtn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition duration-200">
+                အပေါင်စာချုပ် သိမ်းဆည်းမည် / ပြေစာထုတ်မည်
+            </button>
+        </form>
+    </div>
+
+    <!-- Print Preview / Voucher Section -->
+    <div id="printArea" class="hidden max-w-xl mx-auto mt-8 p-6 bg-white border border-slate-300">
+        <div class="text-center border-b pb-3 mb-4">
+            <h2 class="text-xl font-bold">အပေါင်စာချုပ်နှင့် ပြေစာ</h2>
+            <p class="text-xs text-gray-500">ရက်စွဲ - <span id="vDate"></span></p>
+        </div>
+
+        <div class="text-sm space-y-2 mb-4">
+            <p><strong>အပေါင်ရှင် အမည်:</strong> <span id="vName"></span></p>
+            <p><strong>မှတ်ပုံတင်နံပါတ်:</strong> <span id="vNrc"></span></p>
+            <p><strong>ဖုန်းနံပါတ်:</strong> <span id="vPhone"></span></p>
+            <hr class="my-2">
+            <p><strong>ပစ္စည်းအမျိုးအစား:</strong> <span id="vItem"></span> (<span id="vModel"></span>)</p>
+            <p><strong>IMEI 1:</strong> <span id="vImei1"></span> | <strong>IMEI 2:</strong> <span id="vImei2"></span></p>
+            <p><strong>အပြစ်အနာအဆာများ:</strong> <span id="vCondition"></span></p>
+            <hr class="my-2">
+            <p><strong>အပေါင်ထုတ်ပေးငွေ:</strong> <span id="vAmount"></span> ကျပ်</p>
+            <p><strong>အတိုးနှုန်း:</strong> <span id="vRate"></span>%</p>
+            <p><strong>ပြန်ရွေးရမည့် နောက်ဆုံးရက်:</strong> <span id="vDueDate"></span></p>
+        </div>
+
+        <div class="border-t pt-2 text-xs text-gray-600 space-y-1 mb-6">
+            <p>* သတ်မှတ်ထားသော ပြန်ရွေးရမည့်ရက်ထက် ကျော်လွန်ပါက အပေါင်ဆုံးပစ္စည်းအဖြစ် သတ်မှတ်ပါမည်။</p>
+            <p>* ဤပစ္စည်းသည် မိမိပိုင် တရားဝင်ပစ္စည်းဖြစ်ကြောင်း အာမခံပါသည်။</p>
+        </div>
+
+        <div class="flex justify-between pt-8 text-xs font-bold">
+            <div class="text-center">
+                <p>____________________</p>
+                <p>အပေါင်ရှင် လက်မှတ်</p>
+            </div>
+            <div class="text-center">
+                <p>____________________</p>
+                <p>အပေါင်ခံသူ/ဆိုင်လက်မှတ်</p>
+            </div>
+        </div>
+
+        <div class="no-print mt-6 text-center">
+            <button onclick="window.print()" class="bg-green-600 text-white px-4 py-2 rounded">Print ထုတ်မည်</button>
+            <button onclick="document.getElementById('printArea').classList.add('hidden')" class="bg-gray-500 text-white px-4 py-2 rounded ml-2">ပိတ်မည်</button>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration (မိမိ Project ရဲ့ Config ကို ထည့်ပါ)
+        const firebaseConfig = {
+  apiKey: "AIzaSyCGbDq36IIqZMhRafP25dCskl_enpaPW5Q",
+  authDomain: "v-platfrom.firebaseapp.com",
+  databaseURL: "https://v-platfrom-default-rtdb.firebaseio.com",
+  projectId: "v-platfrom",
+  storageBucket: "v-platfrom.firebasestorage.app",
+  messagingSenderId: "602846814555",
+  appId: "1:602846814555:web:4130c05d1fef3c688bfa7e",
+  measurementId: "G-L6P2Y19JGJ"
+};
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Handle Form Submit
+        document.getElementById('pawnForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.disabled = true;
+            saveBtn.innerText = "ခဏစောင့်ပါ...";
+
+            const formData = {
+                customerName: document.getElementById('customerName').value,
+                customerNrc: document.getElementById('customerNrc').value,
+                customerPhone: document.getElementById('customerPhone').value,
+                customerAddress: document.getElementById('customerAddress').value,
+                itemType: document.getElementById('itemType').value,
+                itemModel: document.getElementById('itemModel').value,
+                itemImei1: document.getElementById('itemImei1').value,
+                itemImei2: document.getElementById('itemImei2').value || "-",
+                itemCondition: document.getElementById('itemCondition').value,
+                pawnAmount: Number(document.getElementById('pawnAmount').value),
+                interestRate: Number(document.getElementById('interestRate').value),
+                dueDate: document.getElementById('dueDate').value,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                status: "Active" // အပေါင်ခံထားဆဲ
+            };
+
+            try {
+                // Save to Firestore (Only Text Data)
+                await db.collection("pawn_records").add(formData);
+                
+                // Show Print Preview
+                document.getElementById('vDate').innerText = new Date().toLocaleDateString('my-MM');
+                document.getElementById('vName').innerText = formData.customerName;
+                document.getElementById('vNrc').innerText = formData.customerNrc;
+                document.getElementById('vPhone').innerText = formData.customerPhone;
+                document.getElementById('vItem').innerText = formData.itemType;
+                document.getElementById('vModel').innerText = formData.itemModel;
+                document.getElementById('vImei1').innerText = formData.itemImei1;
+                document.getElementById('vImei2').innerText = formData.itemImei2;
+                document.getElementById('vCondition').innerText = formData.itemCondition;
+                document.getElementById('vAmount').innerText = formData.pawnAmount.toLocaleString();
+                document.getElementById('vRate').innerText = formData.interestRate;
+                document.getElementById('vDueDate').innerText = formData.dueDate;
+
+                document.getElementById('printArea').classList.remove('hidden');
+                document.getElementById('pawnForm').reset();
+                alert("စာချုပ်အချက်အလက်များကို Firestore ထဲသို့ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။");
+            } catch (error) {
+                console.error("Error saving document: ", error);
+                alert("သိမ်းဆည်းရာတွင် အမှားအယွင်းရှိပါသည်: " + error.message);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerText = "အပေါင်စာချုပ် သိမ်းဆည်းမည် / ပြေစာထုတ်မည်";
+            }
+        });
+    </script>
+</body>
+</html>
