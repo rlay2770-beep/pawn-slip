@@ -8,7 +8,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Firebase CDN SDKs (Compat Version) -->
+    <!-- Firebase App & Firestore SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
@@ -154,40 +154,25 @@
     </div>
 
     <script>
-        // Firebase Configuration
+        // smill-pro Project အသစ်၏ Firebase Config
         const firebaseConfig = {
-          apiKey: "AIzaSyCh6nXfFAXZWFncXFqTS2bVnFIAh8qILh0",
-          authDomain: "pawn-slip.firebaseapp.com",
-          databaseURL: "https://pawn-slip-default-rtdb.firebaseio.com",
-          projectId: "pawn-slip",
-          storageBucket: "pawn-slip.firebasestorage.app",
-          messagingSenderId: "473267718709",
-          appId: "1:473267718709:web:124ce3c4f16cdf855bbf7c",
-          measurementId: "G-DHK6V7PY06"
+          apiKey: "AIzaSyB0W62uRfUxlvbES78hWzsoG13mX07dXx8",
+          authDomain: "smill-pro.firebaseapp.com",
+          projectId: "smill-pro",
+          storageBucket: "smill-pro.firebasestorage.app",
+          messagingSenderId: "343860802767",
+          appId: "1:343860802767:web:d2f50a96ff936429a7b3ba",
+          measurementId: "G-2MVC6BGVYR"
         };
 
-        // Initialize Firebase safely
-        let db;
-        try {
-            if (typeof firebase !== 'undefined') {
-                firebase.initializeApp(firebaseConfig);
-                db = firebase.firestore();
-            } else {
-                console.error("Firebase SDK မတက်ပါ။ ကွန်ရက်ချိတ်ဆက်မှုကို စစ်ဆေးပါ။");
-            }
-        } catch (e) {
-            console.error("Firebase Initialization Error: ", e);
-        }
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
         // Handle Form Submit
         document.getElementById('pawnForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            if (!db) {
-                alert("Firebase ချိတ်ဆက်၍မရပါ။ အင်တာနက်လိုင်း စစ်ဆေးပေးပါ။");
-                return;
-            }
-
             const saveBtn = document.getElementById('saveBtn');
             saveBtn.disabled = true;
             saveBtn.innerText = "ခဏစောင့်ပါ...";
@@ -210,12 +195,11 @@
             };
 
             try {
-                // Save to Firestore
+                // Save to Firestore Database
                 await db.collection("pawn_records").add(formData);
                 
                 // Show Print Preview
-                const today = new Date();
-                document.getElementById('vDate').innerText = today.toISOString().split('T')[0];
+                document.getElementById('vDate').innerText = new Date().toLocaleDateString('my-MM');
                 document.getElementById('vName').innerText = formData.customerName;
                 document.getElementById('vNrc').innerText = formData.customerNrc;
                 document.getElementById('vPhone').innerText = formData.customerPhone;
