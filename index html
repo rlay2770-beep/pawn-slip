@@ -8,7 +8,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Firebase App & Firestore SDKs -->
+    <!-- Firebase CDN SDKs (Compat Version) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
@@ -154,7 +154,7 @@
     </div>
 
     <script>
-        // Firebase Configuration (pawn-slip Project အသစ်၏ Config)
+        // Firebase Configuration
         const firebaseConfig = {
           apiKey: "AIzaSyCh6nXfFAXZWFncXFqTS2bVnFIAh8qILh0",
           authDomain: "pawn-slip.firebaseapp.com",
@@ -166,14 +166,28 @@
           measurementId: "G-DHK6V7PY06"
         };
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        // Initialize Firebase safely
+        let db;
+        try {
+            if (typeof firebase !== 'undefined') {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+            } else {
+                console.error("Firebase SDK မတက်ပါ။ ကွန်ရက်ချိတ်ဆက်မှုကို စစ်ဆေးပါ။");
+            }
+        } catch (e) {
+            console.error("Firebase Initialization Error: ", e);
+        }
 
         // Handle Form Submit
         document.getElementById('pawnForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            if (!db) {
+                alert("Firebase ချိတ်ဆက်၍မရပါ။ အင်တာနက်လိုင်း စစ်ဆေးပေးပါ။");
+                return;
+            }
+
             const saveBtn = document.getElementById('saveBtn');
             saveBtn.disabled = true;
             saveBtn.innerText = "ခဏစောင့်ပါ...";
@@ -192,15 +206,16 @@
                 interestRate: Number(document.getElementById('interestRate').value),
                 dueDate: document.getElementById('dueDate').value,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                status: "Active" // အပေါင်ခံထားဆဲ
+                status: "Active"
             };
 
             try {
-                // Save to Firestore (Only Text Data)
+                // Save to Firestore
                 await db.collection("pawn_records").add(formData);
                 
                 // Show Print Preview
-                document.getElementById('vDate').innerText = new Date().toLocaleDateString('my-MM');
+                const today = new Date();
+                document.getElementById('vDate').innerText = today.toISOString().split('T')[0];
                 document.getElementById('vName').innerText = formData.customerName;
                 document.getElementById('vNrc').innerText = formData.customerNrc;
                 document.getElementById('vPhone').innerText = formData.customerPhone;
