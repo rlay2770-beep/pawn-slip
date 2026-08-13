@@ -155,16 +155,16 @@
 
     <script>
         // Firebase Configuration (pawn-slip Project အသစ်၏ Config)
-const firebaseConfig = {
-  apiKey: "AIzaSyCh6nXfFAXZWFncXFqTS2bVnFIAh8qILh0",
-  authDomain: "pawn-slip.firebaseapp.com",
-  databaseURL: "https://pawn-slip-default-rtdb.firebaseio.com",
-  projectId: "pawn-slip",
-  storageBucket: "pawn-slip.firebasestorage.app",
-  messagingSenderId: "473267718709",
-  appId: "1:473267718709:web:124ce3c4f16cdf855bbf7c",
-  measurementId: "G-DHK6V7PY06"
-};
+        const firebaseConfig = {
+          apiKey: "AIzaSyCh6nXfFAXZWFncXFqTS2bVnFIAh8qILh0",
+          authDomain: "pawn-slip.firebaseapp.com",
+          databaseURL: "https://pawn-slip-default-rtdb.firebaseio.com",
+          projectId: "pawn-slip",
+          storageBucket: "pawn-slip.firebasestorage.app",
+          messagingSenderId: "473267718709",
+          appId: "1:473267718709:web:124ce3c4f16cdf855bbf7c",
+          measurementId: "G-DHK6V7PY06"
+        };
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
